@@ -20,7 +20,7 @@ This project is a voice-enabled geospatial web application that allows users to 
 
 1. Clone the repository:
     ```bash
-    git clone https://github.com/your-username/voice-enabled-gis.git
+    git clone https://github.com/aastha0424/voice-enabled-gis.git
     cd voice-enabled-gis
     ```
 
