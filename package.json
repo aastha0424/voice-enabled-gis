@@ -1,0 +1,24 @@
+{
+  "name": "voice-enabled-gis",
+  "version": "1.0.0",
+  "description": "This project is a voice-enabled geospatial web application that allows users to interact with a map using voice commands. The application leverages TensorFlow.js for on-device voice recognition and integrates with open-source GIS libraries like Leaflet.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "http-server src"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@babel/core": "^7.24.7",
+    "@babel/preset-env": "^7.24.7",
+    "babel-loader": "^9.1.3",
+    "http-server": "^14.1.1",
+    "webpack": "^5.92.1",
+    "webpack-cli": "^5.1.4"
+  },
+  "dependencies": {
+    "ol": "^9.2.4"
+  }
+}
