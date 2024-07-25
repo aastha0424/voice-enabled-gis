@@ -129,4 +129,36 @@ document.addEventListener('DOMContentLoaded', function() {
     recognition.addEventListener('end', () => {
         voiceBtn.textContent = '🎤 Click to speak';
     });
+
+    // Function to fetch place information using OpenStreetMap Nominatim API
+    function fetchPlaceInformation(query) {
+        const url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}`;
+        
+        fetch(url)
+            .then(response => response.json())
+            .then(data => {
+                if (data.length > 0) {
+                    const place = data[0];
+                    const lon = parseFloat(place.lon);
+                    const lat = parseFloat(place.lat);
+                    const coords = ol.proj.fromLonLat([lon, lat]);
+                    
+                    // Zoom to the searched place
+                    map.getView().animate({center: coords, zoom: 10});
+                } else {
+                    alert('No information found');
+                }
+            })
+            .catch(error => {
+                console.error('Error fetching place information:', error);
+            });
+    }
+
+    // Add event listener to the search button
+    document.getElementById('search-button').addEventListener('click', () => {
+        const query = document.getElementById('search-input').value;
+        if (query) {
+            fetchPlaceInformation(query);
+        }
+    });
 });

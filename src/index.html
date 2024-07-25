@@ -13,7 +13,13 @@
 <body>
     <div class="container">
         <h1>Voice-Enabled GIS Application</h1>
-        <button id="voiceBtn">🎤 Click to speak</button>
+        <div class="top-bar">
+            <button id="voiceBtn">🎤 Click to speak</button>
+            <div id="search-bar">
+                <input type="text" id="search-input" placeholder="Search for a place">
+                <button id="search-button">Search</button>
+            </div>
+        </div>
         <div id="map" style="height: 500px;"></div> <!-- The map element with height and width -->
     </div>
 
