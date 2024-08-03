@@ -19,15 +19,17 @@
                 <input type="text" id="search-input" placeholder="Search for a place">
                 <button id="search-button">Search</button>
             </div>
+            <button id="show-location">Show My Location</button>
+            <button id="toggle-marker">Add Marker</button> <!-- Marker button added -->
         </div>
-        <div id="map" style="height: 500px;"></div> <!-- The map element with height and width -->
+        <div id="map"></div> <!-- Full-screen map element -->
     </div>
 
     <!-- OpenLayers JS -->
     <script src="./ol/dist/ol.js"></script>
     <!-- OpenLayers LayerSwitcher JS -->
     <script src="./ol/dist/dist/ol-ext.min.js"></script>
-    <!-- Connect with app.js -->
-    <script src="js/app.js" defer></script>
+    <!-- Connect with app.js as a module -->
+    <script src="js/app.js" type="module"></script>
 </body>
 </html>

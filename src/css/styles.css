@@ -12,78 +12,85 @@ body {
     flex: 1;
     display: flex;
     flex-direction: column;
-    padding: 10px;
+    padding: 10px; /* Reduced padding for better spacing */
     background: #ffffff;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     border-radius: 10px;
     width: 100%;
-    max-width: 1500px; /* Maximum width of the container */
+    max-width: 1700px; /* Maximum width of the container */
     margin: 0 auto; /* Center the container horizontally */
+    box-sizing: border-box; /* Include padding in the box model */
 }
 
 h1 {
     color: #333;
-    margin-bottom: 20px;
-    font-size: 1.5em;
+    margin-bottom: 10px;
+    font-size: 1.2em; /* Reduced font size */
+    text-align: center; /* Center the heading */
 }
 
 .top-bar {
     display: flex; /* Ensures horizontal alignment */
     align-items: center; /* Vertically centers the items */
-    gap: 10px; /* Space between the button and search bar */
-    margin-bottom: 20px; /* Space below the top bar */
+    gap: 10px; /* Reduced gap between items */
+    margin-bottom: 10px;
+    justify-content: center; /* Center the top bar */
+    flex-wrap: wrap; /* Wrap elements to new line if necessary */
 }
 
-#voiceBtn {
+#voiceBtn, #search-button, #show-location, #toggle-marker {
     padding: 5px 10px; /* Adjust padding for button size */
     border: none;
     background-color: #007bff;
     color: white;
     border-radius: 5px;
     cursor: pointer;
-    font-size: 0.8em; /* Adjust font size if needed */
-    width: auto; /* Allow button to fit content */
+    font-size: 0.9em; /* Reduced font size */
 }
 
-#voiceBtn:hover {
+#voiceBtn:hover, #search-button:hover, #show-location:hover, #toggle-marker:hover {
     background-color: #0056b3;
 }
 
 #search-bar {
-    display: flex; /* Ensures horizontal alignment */
-    width: 100%; /* Full width of the container */
-    max-width: 600px; /* Optional: limit width */
+    display: flex;
+    align-items: center;
+    position: relative;
 }
 
 #search-input {
-    flex: 1; /* Allows input to fill available space */
     padding: 5px;
+    margin-right: 5px;
+    width: 200px; /* Adjust width as needed */
+}
+
+#suggestion-box {
     border: 1px solid #ccc;
-    border-radius: 4px 0 0 4px;
-    outline: none;
-    font-size: 0.9em;
+    max-height: 200px;
+    overflow-y: auto;
+    position: absolute;
+    background-color: #fff;
+    width: 200px; /* Matches width of the input field */
+    top: 100%; 
+    left: 0;
+    z-index: 1000;
+    border-radius: 0 0 4px 4px;
 }
 
-#search-button {
-    padding: 5px 10px; /* Adjust padding to make button smaller */
-    border: 1px solid #007bff;
-    border-left: none;
-    background-color: #007bff;
-    color: white;
-    border-radius: 0 4px 4px 0;
+.suggestion-item {
+    padding: 8px;
     cursor: pointer;
-    font-size: 0.9em;
-    width: 80px; /* Fixed width for smaller button */
 }
 
-#search-button:hover {
-    background-color: #0056b3;
+.suggestion-item:hover {
+    background-color: #eee;
 }
 
 #map {
     flex: 1; /* Make map fill remaining space */
-    width: 100%; /* Full width of the container */
-    border: 2px solid #ddd;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    height: calc(100vh - 70px); /* Fill remaining height minus the space for header and top-bar */
+    border: none; /* Remove border */
+    border-radius: 0; /* Remove border radius */
+    box-shadow: none; /* Remove box shadow */
 }
