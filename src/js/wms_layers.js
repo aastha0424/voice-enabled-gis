@@ -1,7 +1,7 @@
 // wms_layers.js
 export const wmsLayers = [
     {
-        title: 'Bhuvan Land Use Land Cover',
+        title: 'Delhi LULC',
         url: 'https://bhuvan-vec2.nrsc.gov.in/bhuvan/gwc/service/wmts/',
         layer: 'lulc:DL_LULC50K_1516',
         matrixSet: 'EPSG:4326',
