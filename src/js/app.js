@@ -42,7 +42,6 @@ document.addEventListener('DOMContentLoaded', function() {
         tipLabel: 'Layers'
     });
     map.addControl(layerSwitcher);
-    
 
     // Web Speech API for voice recognition
     const voiceBtn = document.getElementById('voiceBtn');
@@ -267,118 +266,59 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function showCurrentLocation() {
         if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition(
-                function (position) {
-                    const { latitude, longitude } = position.coords;
-                    const coordinates = ol.proj.fromLonLat([longitude, latitude]);
+            navigator.geolocation.getCurrentPosition(function(position) {
+                var coords = ol.proj.fromLonLat([position.coords.longitude, position.coords.latitude]);
+                map.getView().animate({ center: coords, zoom: 14 });
 
-                    map.getView().setCenter(coordinates);
-                    map.getView().setZoom(12);
+                const locationMarker = new ol.Feature({
+                    geometry: new ol.geom.Point(coords)
+                });
 
-                    const userLocationFeature = new ol.Feature({
-                        geometry: new ol.geom.Point(coordinates)
-                    });
+                locationMarker.setStyle(new ol.style.Style({
+                    image: new ol.style.Icon({
+                        src: 'https://openlayers.org/en/latest/examples/data/icon.png',
+                        scale: 0.5
+                    })
+                }));
 
-                    const userLocationLayer = new ol.layer.Vector({
-                        source: new ol.source.Vector({
-                            features: [userLocationFeature]
-                        }),
-                        style: new ol.style.Style({
-                            image: new ol.style.Circle({
-                                radius: 7,
-                                fill: new ol.style.Fill({ color: 'red' }),
-                                stroke: new ol.style.Stroke({ color: 'black', width: 2 })
-                            })
-                        })
-                    });
+                markerSource.clear(); // Clear existing markers
+                markerSource.addFeature(locationMarker);
 
-                    map.getLayers().forEach(layer => {
-                        if (layer instanceof ol.layer.Vector) {
-                            map.removeLayer(layer);
-                        }
-                    });
-
-                    map.addLayer(userLocationLayer);
-                },
-                function (error) {
-                    console.error('Error getting location:', error);
-                },
-                {
-                    enableHighAccuracy: true,
-                    timeout: 5000,
-                    maximumAge: 0
+                // Add "My Location" layer if not already added
+                if (!map.getLayers().getArray().includes(locationLayer)) {
+                    map.addLayer(locationLayer);
                 }
-            );
+
+                locationLayer.setVisible(true); // Ensure it's visible
+
+            }, function(error) {
+                console.error('Error retrieving location:', error);
+                alert('Unable to retrieve your location');
+            });
         } else {
-            alert('Geolocation is not supported by this browser.');
+            alert('Geolocation is not supported by your browser');
         }
     }
 
-    document.getElementById('show-location').addEventListener('click', showCurrentLocation);
-
-    // Marker functionality
-    let markerMode = false;
-
+    // Create a vector layer for markers
     const markerSource = new ol.source.Vector();
     const markerLayer = new ol.layer.Vector({
-        source: markerSource,
-        style: new ol.style.Style({
-            image: new ol.style.Icon({
-                src: 'https://openlayers.org/en/latest/examples/data/icon.png',
-                scale: 0.5 // Adjust the size of the icon
-            })
-        })
+        source: markerSource
     });
-
     map.addLayer(markerLayer);
 
-    document.getElementById('toggle-marker').addEventListener('click', () => {
-        markerMode = !markerMode;
-        document.getElementById('toggle-marker').textContent = markerMode ? 'Marker Mode: ON' : 'Marker Mode: OFF';
+    // "My Location" Layer
+    const locationLayer = new ol.layer.Vector({
+        source: new ol.source.Vector(),
+        title: 'My Location'
     });
 
-    let clickTimeout = null;
-
-    map.on('click', function (evt) {
-        if (!markerMode) return;
-        
-        if (clickTimeout) {
-            clearTimeout(clickTimeout);
-            clickTimeout = null;
-        } else {
-            clickTimeout = setTimeout(() => {
-                const coordinates = evt.coordinate;
-                const feature = new ol.Feature({
-                    geometry: new ol.geom.Point(coordinates)
-                });
-
-                markerSource.addFeature(feature);
-                clickTimeout = null;
-            }, 300); // Delay for distinguishing between single and double click
-        }
-    });
-
-    map.on('dblclick', function (evt) {
-        evt.preventDefault(); // Prevent default zoom on double-click
-
-        if (clickTimeout) {
-            clearTimeout(clickTimeout);
-            clickTimeout = null;
-        }
-
-        const features = map.getFeaturesAtPixel(evt.pixel);
-        if (features.length) {
-            features.forEach(feature => {
+    // Add double-click event to remove markers
+    map.on('dblclick', function(event) {
+        map.forEachFeatureAtPixel(event.pixel, function(feature, layer) {
+            if (layer === markerLayer) {
                 markerSource.removeFeature(feature);
-            });
-        }
-    });
-
-    // Add event listener to clear suggestion box when clicking outside
-    document.addEventListener('click', (event) => {
-        const suggestionBox = document.getElementById('suggestion-box');
-        if (suggestionBox && !suggestionBox.contains(event.target) && event.target.id !== 'search-input') {
-            clearSuggestions();
-        }
+            }
+        });
     });
 });
