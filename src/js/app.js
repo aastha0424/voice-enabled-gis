@@ -87,7 +87,7 @@ document.addEventListener('DOMContentLoaded', function() {
             showCurrentLocation();
         } else if (command.includes('add marker to') || command.includes('mark')) {
             const placeName = command.replace('add marker to ', '').replace('mark ', '');
-            fetchPlaceInformation(placeName)
+            fetchPlaceInformation(placeName);
             addMarkerToPlace(placeName);
         }
     });
@@ -199,6 +199,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 console.error('Error fetching place information:', error);
             });
     }
+
     function fetchPlaceInformationp(query) {
         const url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}`;
     
@@ -245,7 +246,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 console.error('Error adding marker:', error);
             });
     }
-    
 
     function panToPlace(placeName) {
         fetchPlaceSuggestions(placeName)
@@ -320,5 +320,36 @@ document.addEventListener('DOMContentLoaded', function() {
                 markerSource.removeFeature(feature);
             }
         });
+    });
+
+    // Marker mode toggle
+    let markerMode = false;
+    const markerToggleBtn = document.getElementById('toggle-marker');
+    markerToggleBtn.addEventListener('click', () => {
+        markerMode = !markerMode;
+        markerToggleBtn.textContent = markerMode ? 'Disable Marker Mode' : 'Enable Marker Mode';
+    });
+
+    map.on('click', function(event) {
+        if (markerMode) {
+            const coords = map.getCoordinateFromPixel(event.pixel);
+            const lonLat = ol.proj.toLonLat(coords);
+
+            // Add marker at the clicked location
+            const markerFeature = new ol.Feature({
+                geometry: new ol.geom.Point(coords)
+            });
+
+            markerSource.addFeature(markerFeature);
+
+            const markerStyle = new ol.style.Style({
+                image: new ol.style.Icon({
+                    src: 'https://openlayers.org/en/latest/examples/data/icon.png',
+                    scale: 0.5
+                })
+            });
+
+            markerFeature.setStyle(markerStyle);
+        }
     });
 });
