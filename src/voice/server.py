@@ -1,6 +1,7 @@
-# server.py
 import websockets
 import asyncio
+import json
+from commandPatterns import identify_command
 
 PORT = 7890
 print(f"Server listening on Port {PORT}")
@@ -13,9 +14,10 @@ async def echo(websocket, path):
     try:
         async for message in websocket:
             print(f"Received message from client: {message}")
-            for client in connected_clients:
-                if client != websocket:
-                    await client.send(f"Someone said: {message}")
+            command_result = identify_command(message)
+            response = json.dumps(command_result)
+            print(f"Sending response to client: {response}")
+            await websocket.send(response)
     except websockets.exceptions.ConnectionClosed as e:
         print("A client just disconnected")
     finally:

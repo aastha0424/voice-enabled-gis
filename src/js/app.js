@@ -61,35 +61,69 @@ document.addEventListener('DOMContentLoaded', function() {
         [osm, osmHOT, satellite].forEach(l => l.setVisible(false));
         layer.setVisible(true);
         currentBaseLayer = layer;
+
+        // Turn off WMS layers
+        map.getLayers().forEach(l => {
+            if (l.get('type') === 'wms') {
+                l.setVisible(false);
+            }
+        });
     }
 
-    recognition.addEventListener('result', (event) => {
-        const command = event.results[0][0].transcript.toLowerCase();
-        console.log('Command:', command);
-        voiceBtn.textContent = '🎤 Click to speak';
+    // Establish WebSocket connection to the Python server
+    const socket = new WebSocket('ws://localhost:7890');
 
-        if (command.includes('standard map')) {
+    socket.onopen = () => {
+        console.log('Connected to the server');
+    };
+
+    socket.onmessage = (event) => {
+        const result = JSON.parse(event.data);
+        console.log('Received result from server:', result);
+    
+        const { action, place_name } = result;
+    
+        if (action === 'StandardMap') {
             showBaseLayer(osm);
-        } else if (command.includes('relief map')) {
+        } else if (action === 'ReliefMap') {
             showBaseLayer(osmHOT);
-        } else if (command.includes('satellite map')) {
+        } else if (action === 'SatelliteMap') {
             showBaseLayer(satellite);
-        } else if (command.includes('bhuvan map')) {
+        } else if (action === 'BhuvanMap') {
             map.getLayers().forEach(layer => {
                 if (layer.get('title') === 'Delhi LULC') {
                     showBaseLayer(layer);
                 }
             });
-        } else if (command.includes('show me') || command.includes('pan to')) {
-            const placeName = command.replace('show me ', '').replace('pan to ', '');
-            panToPlace(placeName);
-        } else if (command.includes('show my location')) {
+        } else if (action === 'panToPlace') {
+            panToPlace(place_name);
+        } else if (action === 'addMarkerToPlace') {
+            fetchPlaceInformation(place_name);
+            addMarkerToPlace(place_name);
+        } else if (action === 'showMyLocation') {
             showCurrentLocation();
-        } else if (command.includes('add marker to') || command.includes('mark')) {
-            const placeName = command.replace('add marker to ', '').replace('mark ', '');
-            fetchPlaceInformation(placeName);
-            addMarkerToPlace(placeName);
+        } else {
+            console.log('Unknown action or no valid place name detected');
         }
+    };
+    
+
+    socket.onerror = (error) => {
+        console.error('WebSocket error:', error);
+    };
+
+    socket.onclose = () => {
+        console.log('Disconnected from the server');
+    };
+
+    // Voice recognition event listener
+    recognition.addEventListener('result', (event) => {
+        const command = event.results[0][0].transcript.toLowerCase();
+        console.log('Command:', command);
+        voiceBtn.textContent = '🎤 Click to speak';
+
+        // Send the command to the WebSocket server
+        socket.send(command);
     });
 
     recognition.addEventListener('end', () => {
