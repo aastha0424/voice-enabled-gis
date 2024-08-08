@@ -98,7 +98,20 @@ def identify_command(command):
         ],
         'showMyLocation': [
         r'show my location|where am i|show me where i am|current location|locate me|find my location'
-        ]
+        ],
+        'zoomIn': [
+        r'zoom in to [a-zA-Z\s]+', 
+        r'increase zoom',
+        r'zoom closer',
+        r'magnify',
+        r'enlarge'
+    ],
+    'zoomOut': [
+        r'zoom out from [a-zA-Z\s]+', 
+        r'decrease zoom',
+        r'zoom farther',
+        r'reduce zoom'
+    ],
     }
 
     # Check for base layer commands
@@ -108,9 +121,17 @@ def identify_command(command):
                 if re.search(regex, lower_command):
                     return {'action': 'showBaseLayer'}
 
-    # Check for other commands if no base layer command matched
+    # Check for zoom commands
+    for action in ['zoomIn', 'zoomOut']:
+        for regex in patterns.get(action, []):
+            if re.search(regex, lower_command):
+                # Extract the location if available
+                location = extract_location(command)
+                return {'action': action, 'place_name': location if location else 'unknown'}
+    
+    # Check for other commands if no base layer or zoom command matched
     for action, regex_list in patterns.items():
-        if action != 'showBaseLayer':
+        if action not in ['showBaseLayer', 'zoomIn', 'zoomOut']:
             for regex in regex_list:
                 match = re.search(regex, lower_command)
                 if match:
@@ -122,13 +143,8 @@ def identify_command(command):
 # Test cases
 if __name__ == "__main__":
     test_commands = [
-        "display gwalior on the screen",
-        "show me satellite map ",
-        "zoom into Ahmedabad",
-        "pan to Bengaluru",
-        "add marker to Delhi",
-        "show me Paris",
-        "show my location"
+        "zoom in to Mumbai",
+        "zoom in to current location"
     ]
 
     for cmd in test_commands:
