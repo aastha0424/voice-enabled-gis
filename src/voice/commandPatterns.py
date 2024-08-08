@@ -41,7 +41,6 @@ def extract_location(command):
 
     # Extract locations using spaCy
     for ent in doc.ents:
-
         if ent.label_ in ['GPE', 'LOC']:
             location_name = ent.text
             break
@@ -97,21 +96,21 @@ def identify_command(command):
             r'add marker to|mark|place marker at|pin'
         ],
         'showMyLocation': [
-        r'show my location|where am i|show me where i am|current location|locate me|find my location'
+            r'show my location|where am i|show me where i am|current location|locate me|find my location'
         ],
         'zoomIn': [
-        r'zoom in to [a-zA-Z\s]+', 
-        r'increase zoom',
-        r'zoom closer',
-        r'magnify',
-        r'enlarge'
-    ],
-    'zoomOut': [
-        r'zoom out from [a-zA-Z\s]+', 
-        r'decrease zoom',
-        r'zoom farther',
-        r'reduce zoom'
-    ],
+            r'zoom in to [a-zA-Z\s]+', 
+            r'increase zoom',
+            r'zoom closer',
+            r'magnify',
+            r'enlarge'
+        ],
+        'zoomOut': [
+            r'zoom out from [a-zA-Z\s]+', 
+            r'decrease zoom',
+            r'zoom farther',
+            r'reduce zoom'
+        ]
     }
 
     # Check for base layer commands
@@ -128,8 +127,8 @@ def identify_command(command):
                 # Extract the location if available
                 location = extract_location(command)
                 return {'action': action, 'place_name': location if location else 'unknown'}
-    
-    # Check for other commands if no base layer or zoom command matched
+
+    # Check for other commands if no base layer command matched
     for action, regex_list in patterns.items():
         if action not in ['showBaseLayer', 'zoomIn', 'zoomOut']:
             for regex in regex_list:
@@ -143,8 +142,13 @@ def identify_command(command):
 # Test cases
 if __name__ == "__main__":
     test_commands = [
-        "zoom in to Mumbai",
-        "zoom in to current location"
+        "display gwalior on the screen",
+        "show me satellite map",
+        "zoom into Ahmedabad",
+        "pan to Bengaluru",
+        "add marker to Delhi",
+        "show me Paris",
+        "show my location"
     ]
 
     for cmd in test_commands:

@@ -380,6 +380,7 @@ document.addEventListener('DOMContentLoaded', function() {
             map.removeInteraction(interaction);
         }
     });
+
     
     // Marker mode toggle
     let markerMode = false;
@@ -439,3 +440,4 @@ document.addEventListener('click', function(event) {
 
 
 });
+//new file
