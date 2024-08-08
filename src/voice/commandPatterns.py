@@ -76,42 +76,36 @@ def identify_command(command):
     lower_command = command.lower()
     
     # Define patterns and corresponding actions
-    patterns = {
-        'StandardMap': [
-            r'standard map|show standard view|set view to standard'
-        ],
-        'ReliefMap': [
-            r'relief map|show relief view|set view to relief'
-        ],
-        'SatelliteMap': [
-            r'satellite map|show satellite view|set view to satellite'
-        ],
-        'BhuvanMap': [
-            r'bhuvan map|show bhuvan view|set view to bhuvan'
-        ],
-        'panToPlace': [
-            r'zoom in|magnify|enlarge|focus on|take me to|show me|pan to|can you please zoom to|can you focus on|navigate to|set view to|move to|go|display'
-        ],
-        'addMarkerToPlace': [
-            r'add marker to|mark|place marker at|pin'
-        ],
-        'showMyLocation': [
-            r'show my location|where am i|show me where i am|current location|locate me|find my location'
-        ],
-        'zoomIn': [
-            r'zoom in to [a-zA-Z\s]+', 
-            r'increase zoom',
-            r'zoom closer',
-            r'magnify',
-            r'enlarge'
-        ],
-        'zoomOut': [
-            r'zoom out from [a-zA-Z\s]+', 
-            r'decrease zoom',
-            r'zoom farther',
-            r'reduce zoom'
-        ]
-    }
+    patterns = {    
+    'StandardMap': [
+        r'standard map|show standard view|set view to standard|default map|normal map|regular map|switch map to standard view|switch to standard map|switch to standard view'
+    ],
+    'ReliefMap': [
+        r'relief map|show relief view|set view to relief|topographic map|terrain map|elevation map|switch map to relief view|switch to relief map|switch to relief view'
+    ],
+    'SatelliteMap': [
+        r'satellite map|show satellite view|set view to satellite|aerial view|satellite imagery|overhead view|switch map to satellite view|switch to satellite map|switch to satellite view'
+    ],
+    'BhuvanMap': [
+        r'bhuvan map|show bhuvan view|set view to bhuvan|delhi lulc map|land use map|land cover map|switch map to bhuvan view|switch to bhuvan map of delhi'
+    ],
+    'panToPlace': [
+        r'focus on|take me to|show me|pan to|navigate to|set view to|move to|go|display|center on|move map to|locate on|locate to'
+    ],
+    'addMarkerToPlace': [
+        r'add marker to|mark|place marker at|pin|drop pin at|set marker at|add pin|create marker|point'
+    ],
+    'showMyLocation': [
+        r'show my location|where am i|show me where i am|current location|locate me|find my location|where is my position|my current location|find my current spot'
+    ],
+    'zoomIn': [
+        r'zoom in to [a-zA-Z\s]+|zoom in|increase zoom|zoom closer|magnify|enlarge|tighten view|focus closer|come closer|bring in closer|magnified|shrink|enhance|move closer|pull out|pull in'
+    ],
+    'zoomOut': [
+        r'zoom out from [a-zA-Z\s]+|zoom out|decrease zoom|zoom farther|reduce zoom|widen view|pull back|zoom away|back off|wide view'
+    ]
+}
+
 
     # Check for base layer commands
     for action, regex_list in patterns.items():
@@ -142,13 +136,9 @@ def identify_command(command):
 # Test cases
 if __name__ == "__main__":
     test_commands = [
-        "display gwalior on the screen",
-        "show me satellite map",
-        "zoom into Ahmedabad",
-        "pan to Bengaluru",
-        "add marker to Delhi",
-        "show me Paris",
-        "show my location"
+        "zoom in",
+        "zoom in to mumbai",
+        "zoom out"
     ]
 
     for cmd in test_commands:

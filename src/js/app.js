@@ -73,48 +73,63 @@ document.addEventListener('DOMContentLoaded', function() {
     // Establish WebSocket connection to the Python server
     const socket = new WebSocket('ws://localhost:7890');
 
-    socket.onopen = () => {
-        console.log('Connected to the server');
-    };
+socket.onopen = () => {
+    console.log('Connected to the server');
+};
 
-    socket.onmessage = (event) => {
-        const result = JSON.parse(event.data);
-        console.log('Received result from server:', result);
-    
-        const { action, place_name } = result;
-    
-        if (action === 'StandardMap') {
-            showBaseLayer(osm);
-        } else if (action === 'ReliefMap') {
-            showBaseLayer(osmHOT);
-        } else if (action === 'SatelliteMap') {
-            showBaseLayer(satellite);
-        } else if (action === 'BhuvanMap') {
-            map.getLayers().forEach(layer => {
-                if (layer.get('title') === 'Delhi LULC') {
-                    showBaseLayer(layer);
-                }
-            });
-        } else if (action === 'panToPlace') {
-            panToPlace(place_name);
-        } else if (action === 'addMarkerToPlace') {
-            fetchPlaceInformation(place_name);
-            addMarkerToPlace(place_name);
-        } else if (action === 'showMyLocation') {
-            showCurrentLocation();
+socket.onmessage = (event) => {
+    const result = JSON.parse(event.data);
+    console.log('Received result from server:', result);
+
+    const { action, place_name } = result;
+
+    if (action === 'StandardMap') {
+        showBaseLayer(osm);
+    } else if (action === 'ReliefMap') {
+        showBaseLayer(osmHOT);
+    } else if (action === 'SatelliteMap') {
+        showBaseLayer(satellite);
+    } else if (action === 'BhuvanMap') {
+        map.getLayers().forEach(layer => {
+            if (layer.get('title') === 'Delhi LULC') {
+                showBaseLayer(layer);
+            }
+        });
+    } else if (action === 'zoomIn') {
+        if (place_name === 'unknown') {
+            zoomIn(); // Zoom in from the current view
         } else {
-            console.log('Unknown action or no valid place name detected');
+             // Zoom in to a specific location
+             fetchPlaceInformation(place_name);
+             zoomIn();
         }
-    };
-    
+    } else if (action === 'zoomOut') {
+        if (place_name === 'unknown') {
+            zoomOut(); // Zoom out from the current view
+        } else {
+            // Zoom out from a specific location
+            fetchPlaceInformation(place_name);
+            zoomIn();
+        }
+    } else if (action === 'panToPlace') {
+        panToPlace(place_name);
+    } else if (action === 'addMarkerToPlace') {
+        fetchPlaceInformation(place_name);
+        addMarkerToPlace(place_name);
+    } else if (action === 'showMyLocation') {
+        showCurrentLocation();
+    } else {
+        console.log('Unknown action or no valid place name detected');
+    }
+};
 
-    socket.onerror = (error) => {
-        console.error('WebSocket error:', error);
-    };
+socket.onerror = (error) => {
+    console.error('WebSocket error:', error);
+};
 
-    socket.onclose = () => {
-        console.log('Disconnected from the server');
-    };
+socket.onclose = () => {
+    console.log('Disconnected from the server');
+};
 
     // Voice recognition event listener
     recognition.addEventListener('result', (event) => {
@@ -336,7 +351,21 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('show-location').addEventListener('click', () => {
         showCurrentLocation();
     });
+    // Function to zoom in from the current view
+    function zoomIn() {
+    const view = map.getView();
+    const zoom = view.getZoom();
+    view.setZoom(zoom + 1);
+    }
 
+    
+
+    // Function to zoom out from the current view
+    function zoomOut() {
+        const view = map.getView();
+        const zoom = view.getZoom();
+        view.setZoom(zoom - 1);
+    }
 
     // "My Location" Layer
     const locationLayer = new ol.layer.Vector({
