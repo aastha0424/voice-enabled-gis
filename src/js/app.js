@@ -333,29 +333,54 @@ document.addEventListener('DOMContentLoaded', function() {
             alert('Geolocation is not supported by your browser');
         }
     }
-
-    // Create a vector layer for markers
-    const markerSource = new ol.source.Vector();
-    const markerLayer = new ol.layer.Vector({
-        source: markerSource
+    document.getElementById('show-location').addEventListener('click', () => {
+        showCurrentLocation();
     });
-    map.addLayer(markerLayer);
+
 
     // "My Location" Layer
     const locationLayer = new ol.layer.Vector({
         source: new ol.source.Vector(),
         title: 'My Location'
     });
+    // Initialize marker source and layer
+    const markerSource = new ol.source.Vector();
+    const markerLayer = new ol.layer.Vector({
+    source: markerSource
+    });
+    map.addLayer(markerLayer);
+    map.on('dblclick', function(event) {
+    const pixel = event.pixel;
+    console.log('Double-click pixel:', pixel); // Debugging line
+
+    map.forEachFeatureAtPixel(pixel, function(feature, layer) {
+        if (layer === markerLayer) {
+            console.log('Removing feature:', feature); // Debugging line
+
+            // Remove the feature
+            markerSource.removeFeature(feature);
+
+            // Verify if the feature was removed
+            if (!markerSource.getFeatures().includes(feature)) {
+                console.log('Feature successfully removed.');
+            } else {
+                console.log('Feature was not removed.');
+            }
+
+            return true; // Stop iteration after removing the feature
+        }
+    });
+});
+
+    
 
     // Add double-click event to remove markers
-    map.on('dblclick', function(event) {
-        map.forEachFeatureAtPixel(event.pixel, function(feature, layer) {
-            if (layer === markerLayer) {
-                markerSource.removeFeature(feature);
-            }
-        });
+    map.getInteractions().forEach(function(interaction) {
+        if (interaction instanceof ol.interaction.DoubleClickZoom) {
+            map.removeInteraction(interaction);
+        }
     });
-
+    
     // Marker mode toggle
     let markerMode = false;
     const markerToggleBtn = document.getElementById('toggle-marker');
@@ -386,4 +411,31 @@ document.addEventListener('DOMContentLoaded', function() {
             markerFeature.setStyle(markerStyle);
         }
     });
+    function clearSuggestions() {
+    const suggestionBox = document.getElementById('suggestion-box');
+    if (suggestionBox) {
+        suggestionBox.remove();
+    }
+}
+
+document.addEventListener('click', function(event) {
+    if (!document.getElementById('search-bar').contains(event.target)) {
+        clearSuggestions();
+    }
+});
+function clearSuggestions() {
+    const suggestionBox = document.getElementById('suggestion-box');
+    if (suggestionBox) {
+        suggestionBox.remove();
+    }
+}
+
+document.addEventListener('click', function(event) {
+    if (!document.getElementById('search-bar').contains(event.target)) {
+        clearSuggestions();
+    }
+});
+
+
+
 });
