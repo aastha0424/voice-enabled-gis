@@ -62,17 +62,24 @@ document.addEventListener('DOMContentLoaded', function() {
     let currentBaseLayer = null;
 
     function showBaseLayer(layer) {
-        [osm, osmHOT, satellite].forEach(l => l.setVisible(false));
+        // Turn off all base layers
+        const baseLayers = [osm, osmHOT, satellite, ...map.getLayers().getArray().filter(l => ['OpenRailwayMap', 'OpenTopoMap'].includes(l.get('title')))];
+
+        // Hide all base layers
+        baseLayers.forEach(l => l.setVisible(false));
+        
+        // Make the selected base layer visible
         layer.setVisible(true);
         currentBaseLayer = layer;
-
-        // Turn off WMS layers
+    
+        // Turn off all WMS and overlay layers, including those from wmsLayerDatabase
         map.getLayers().forEach(l => {
-            if (l.get('type') === 'wms') {
+            if (l.get('type') === 'wms' || l.get('type') === 'overlay') {
                 l.setVisible(false);
             }
         });
     }
+    
 
     // Establish WebSocket connection to the Python server
     const socket = new WebSocket('ws://localhost:7890');
@@ -93,13 +100,24 @@ socket.onmessage = (event) => {
         showBaseLayer(osmHOT);
     } else if (action === 'SatelliteMap') {
         showBaseLayer(satellite);
-    } else if (action === 'BhuvanMap') {
-        map.getLayers().forEach(layer => {
-            if (layer.get('title') === 'Delhi LULC') {
-                showBaseLayer(layer);
-            }
-        });
-    } else if (action === 'zoomIn') {
+    } else if (action === 'OpenTopoMap') {
+        showLayerByTitle('OpenTopoMap');
+    } else if (action === 'OpenRailwayMap') {
+        showLayerByTitle('OpenRailwayMap');
+    } else if (action === 'DelhiLULC') {
+        fetchPlaceInformation("delhi");
+        showLayerByTitle('Delhi LULC');
+    } else if (action === 'AssamLULC') {
+        fetchPlaceInformation("assam");
+        showLayerByTitle('Assam LULC');
+    } else if (action === 'HPGeomorphology') {
+        fetchPlaceInformation("himachal pradesh");
+        showLayerByTitle('HP Geomorphology');
+    } else if (action === 'UPLULC') {
+        fetchPlaceInformation("uttar pradesh");
+        showLayerByTitle('UP LULC');
+    }
+     else if (action === 'zoomIn') {
         if (place_name === 'unknown') {
             zoomIn(); // Zoom in from the current view
         } else {
@@ -148,6 +166,17 @@ socket.onclose = () => {
     recognition.addEventListener('end', () => {
         voiceBtn.textContent = '🎤 Click to speak';
     });
+
+    function showLayerByTitle(title) {
+        map.getLayers().forEach(layer => {
+            if (layer.get('title') === title) {
+                layer.setVisible(true);
+            } else {
+                layer.setVisible(false);
+            }
+        });
+    }
+    
 
     function fetchPlaceSuggestions(query) {
         const url = `https://nominatim.openstreetmap.org/search?format=json&addressdetails=1&q=${encodeURIComponent(query)}&limit=5`;

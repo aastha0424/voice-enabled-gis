@@ -104,7 +104,34 @@ def identify_command(command):
     ],
     'zoomOut': [
         r'zoom out from [a-zA-Z\s]+|zoom out|decrease zoom|zoom farther|reduce zoom|widen view|pull back|zoom away|back off|wide view'
-    ]
+    ],
+    'BhuvanMap': [
+        r'bhuvan map|show bhuvan view|set view to bhuvan|delhi lulc map|land use map|land cover map|switch map to bhuvan view|switch to bhuvan map of delhi|bhuvan lulc|lulc view|indian map|indian bhuvan map|land use cover map|indian satellite view|india bhuvan'
+    ],
+    'DelhiLULC': [
+        r'delhi lulc|show delhi lulc|delhi land use|delhi land cover|delhi map|show delhi land use|show delhi land cover|switch to delhi lulc'
+    ],
+    'AssamLULC': [
+        r'assam lulc|show assam lulc|assam land use|assam land cover|assam map|show assam land use|show assam land cover|switch to assam lulc'
+    ],
+    'HPGeomorphology': [
+        r'himachal pradesh geomorphology|show himachal pradesh geomorphology|hp geomorphology|show hp geomorphology|himachal pradesh landform|hp landform|show hp landform|switch to hp geomorphology'
+    ],
+    'UPLULC': [
+        r'uttar pradesh lulc|show uttar pradesh lulc|up land use|up land cover|uttar pradesh map|show uttar pradesh land use|show uttar pradesh land cover|switch to uttar pradesh lulc'
+    ],
+    'OpenTopoMap': [
+        r'opentopomap|show opentopomap|topographic map|open topography map|topo map|open topo map|switch to opentopomap'
+    ],
+    'OpenRailwayMap': [
+        r'openrailwaymap|show openrailwaymap|railway map|open railway map|train map|railroad map|switch to openrailwaymap'
+    ],
+    'panToPlace': [
+        r'focus on|take me to|show me|pan to|navigate to|set view to|move to|go|display|center on|move map to|locate on|locate to|shift to|move towards|find|zoom to|direct me to|show location of|take map to'
+    ],
+    'addMarkerToPlace': [
+        r'add marker to|mark|place marker at|pin|drop pin at|set marker at|add pin|create marker|point|flag this place|put a marker|put a pin|add a marker|place a pin|drop a marker|mark this spot|tag this location|tag'
+    ]   
 }
 
 
@@ -137,7 +164,7 @@ def identify_command(command):
 # Test cases
 if __name__ == "__main__":
     test_commands = [
-        "zoom in to bihar",
+        "assam lulc",
         "zoom in to himachal pradesh",
         "zoom out gagal"
     ]
