@@ -1,3 +1,4 @@
+import { addWMSBhuvanLayers } from './wms_layers.js';
 import { addWMSLayers } from './wms_layers.js';
 
 document.addEventListener('DOMContentLoaded', function() {
@@ -37,6 +38,9 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     addWMSLayers(map);
+    addWMSBhuvanLayers(map);
+    
+
 
     var layerSwitcher = new ol.control.LayerSwitcher({
         tipLabel: 'Layers'

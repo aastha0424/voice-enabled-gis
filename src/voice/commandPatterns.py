@@ -13,10 +13,11 @@ geolocator = Nominatim(user_agent="geoapiExercises")
 # Load the Indian cities dataset
 cities_df = pd.read_csv(r'src\voice\Indian Cities Database.csv')
 indian_cities = set(cities_df['City'].str.lower().tolist())
+indian_states = set(cities_df['State'].str.lower().tolist())
 
 def get_location_from_database(location):
     """Check if the location exists in the Indian cities database."""
-    return location.lower() if location.lower() in indian_cities else None
+    return location.lower() if location.lower() in indian_cities or location.lower() in indian_states else None
 
 def get_location_name(location):
     """Use geopy to attempt to find the location if it's not in the database."""
@@ -136,9 +137,9 @@ def identify_command(command):
 # Test cases
 if __name__ == "__main__":
     test_commands = [
-        "zoom in",
-        "zoom in to mumbai",
-        "zoom out"
+        "zoom in to bihar",
+        "zoom in to himachal pradesh",
+        "zoom out gagal"
     ]
 
     for cmd in test_commands:
