@@ -1,0 +1,134 @@
+[
+    {
+        "name": "No Name",
+        "title": "magOSM WMS Service"
+    },
+    {
+        "name": "citymap:niveau_1",
+        "title": "Niveau 1"
+    },
+    {
+        "name": "citymap:niveau_2",
+        "title": "Niveau 2"
+    },
+    {
+        "name": "citymap:niveau_3",
+        "title": "Niveau 3"
+    },
+    {
+        "name": "magosm:buildings_polygon",
+        "title": "Emprises des b\u00e2timents"
+    },
+    {
+        "name": "magosm:constructions",
+        "title": "Localisations des constructions"
+    },
+    {
+        "name": "magosm:landuses_naturals_polygon",
+        "title": "Occupation du sol"
+    },
+    {
+        "name": "magosm:pnr_polygon",
+        "title": "Parcs Naturels R\u00e9gionaux"
+    },
+    {
+        "name": "magosm:police_point",
+        "title": "Localisations des brigades de gendarmeries et commissariats de police"
+    },
+    {
+        "name": "magosm:proposed",
+        "title": "Localisations des projets de constructions"
+    },
+    {
+        "name": "magosm:schools_point",
+        "title": "Localisations des \u00e9tablissements scolaires"
+    },
+    {
+        "name": "magosm:shops_point",
+        "title": "Localisations des magasins"
+    },
+    {
+        "name": "magosm:social_facility_point",
+        "title": "Localisation des structures sociales"
+    },
+    {
+        "name": "magosm:vineyards_grapes_polygon",
+        "title": "Vignobles"
+    },
+    {
+        "name": "Transport",
+        "title": "Transport"
+    },
+    {
+        "name": "magosm:bicycle_mtb_routes_line",
+        "title": "Itin\u00e9raires cyclables"
+    },
+    {
+        "name": "magosm:bus_routes_line",
+        "title": "Itin\u00e9raires de bus"
+    },
+    {
+        "name": "magosm:cycleways_line",
+        "title": "R\u00e9seau cyclable"
+    },
+    {
+        "name": "magosm:highways_line",
+        "title": "R\u00e9seau routier"
+    },
+    {
+        "name": "magosm:highways_line_recently_modified",
+        "title": "Modifications R\u00e9centes du R\u00e9seau Routier"
+    },
+    {
+        "name": "magosm:hiking_foot_routes_line",
+        "title": "Itin\u00e9raires de randonn\u00e9e"
+    },
+    {
+        "name": "magosm:motorways_line",
+        "title": "Autoroutes"
+    },
+    {
+        "name": "magosm:railways_line",
+        "title": "Voies ferr\u00e9es"
+    },
+    {
+        "name": "magosm:subway_routes_line",
+        "title": "Itin\u00e9raires de m\u00e9tro"
+    },
+    {
+        "name": "magosm:tram_ltr_routes_line",
+        "title": "Itin\u00e9raires de tramways"
+    },
+    {
+        "name": "Sant\u00e9",
+        "title": "Sant\u00e9"
+    },
+    {
+        "name": "magosm:clinics_point",
+        "title": "Localisations des cliniques"
+    },
+    {
+        "name": "magosm:hospitals_point",
+        "title": "Localisations des h\u00f4pitaux"
+    },
+    {
+        "name": "magosm:pharmacies_point",
+        "title": "Localisations des pharmacies"
+    },
+    {
+        "name": "T\u00e9l\u00e9com",
+        "title": "T\u00e9l\u00e9com"
+    },
+    {
+        "name": "magosm:telecom_copper_connection_point",
+        "title": "Localisations des Sous-R\u00e9partiteurs Cuivre (SR)"
+    },
+    {
+        "name": "magosm:telecom_exchange_point",
+        "title": "Localisations des noeuds de raccordement abonn\u00e9s (NRA) et optiques (NRO)"
+    },
+    {
+        "name": "magosm:telecom_fibre_connection_point",
+        "title": "Localisations des Points de Mutualisation Fibre (PMZ)"
+    }
+]
