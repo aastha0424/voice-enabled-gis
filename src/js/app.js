@@ -1,5 +1,7 @@
 import { addWMSBhuvanLayers } from './wms_layers.js';
 import { addWMSLayers } from './wms_layers.js';
+import { addWMSLayer } from './wms_layers.js';
+//import { addJsonLayers } from './wms_layers.js';
 
 document.addEventListener('DOMContentLoaded', function() {
     console.log("Voice-Enabled GIS Application");
@@ -39,7 +41,10 @@ document.addEventListener('DOMContentLoaded', function() {
 
     addWMSLayers(map);
     addWMSBhuvanLayers(map);
-    
+    //addJsonLayers(map)
+    // Adding a WMS layer with specific parameters
+    //addWMSLayer(map, 'https://ch-osm-services.geodatasolutions.ch/geoserver/ows?service=wms&version=1.3.0&request=GetMap', 'magosm:highways_line', 'Highways Line');
+
 
 
     var layerSwitcher = new ol.control.LayerSwitcher({
@@ -134,14 +139,22 @@ socket.onmessage = (event) => {
             zoomIn();
         }
     } else if (action === 'panToPlace') {
-        panToPlace(place_name);
+        if (place_name === 'unknown') {
+            alert('Action not location is unknown');
+        } else {
+            panToPlace(place_name);
+        }
     } else if (action === 'addMarkerToPlace') {
-        fetchPlaceInformation(place_name);
-        addMarkerToPlace(place_name);
+        if (place_name === 'unknown') {
+            alert('Action not location is unknown');
+        } else {
+            fetchPlaceInformation(place_name);
+            addMarkerToPlace(place_name);
+        }
     } else if (action === 'showMyLocation') {
         showCurrentLocation();
     } else {
-        console.log('Unknown action or no valid place name detected');
+        alert('Action not determined ');
     }
 };
 

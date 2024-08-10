@@ -18,7 +18,7 @@ const wmsLayerDatabase = {
     // Add more layers here
 };
 
-// Function to add all WMS layers to the map
+//Function to add all WMS layers to the map
 export function addWMSLayers(map) {
     Object.keys(wmsLayerDatabase).forEach(layerKey => {
         const layerConfig = wmsLayerDatabase[layerKey];
@@ -33,6 +33,23 @@ export function addWMSLayers(map) {
         });
         map.addLayer(layer);
     });
+}
+//Function to add a WMS layer to the map
+export function addWMSLayer(map, wmsUrl, layerName, title) {
+    const wmsLayer = new ol.layer.Tile({
+        source: new ol.source.TileWMS({
+            url: wmsUrl,
+            params: {
+                'LAYERS': layerName,
+                'FORMAT': 'image/png',
+                'TILED': true
+            },
+            serverType: 'geoserver' // Adjust if necessary
+        }),
+        title: title,
+        type: 'overlay'
+    });
+    map.addLayer(wmsLayer);
 }
 
 const bhuvanTileGrid = new ol.tilegrid.WMTS({
@@ -77,6 +94,32 @@ export function addWMSBhuvanLayers(map) {
     addBhuvanLayer(map, 'lulc:UP_LULC50K_1516', 'UP LULC');
 
     // Add non-Bhuvan layers
+}
+// Function to add JSON layers to the map
+export async function addJsonLayers(map) {
+    try {
+        const response = await fetch('/static/wms_layers.json');  // Path to your JSON file
+        const jsonData = await response.json();
+
+        jsonData.forEach(layer => {
+            const wmsLayer = new ol.layer.Tile({
+                source: new ol.source.TileWMS({
+                    url: 'https://ch-osm-services.geodatasolutions.ch/geoserver/ows?service=wms&version=1.3.0&request=GetMap',
+                    params: {
+                        'LAYERS': layer.layer,
+                        'FORMAT': 'image/png',
+                        'TILED': true
+                    },
+                    serverType: 'geoserver'
+                }),
+                title: layer.title,
+                type: 'overlay'
+            });
+            map.addLayer(wmsLayer);
+        });
+    } catch (error) {
+        console.error('Failed to load JSON layers:', error);
+    }
 }
 
 

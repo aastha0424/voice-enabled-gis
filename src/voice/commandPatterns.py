@@ -48,12 +48,21 @@ def extract_location(command):
 
     # If spaCy fails, try to use regex
     if not location_name:
-        location_fallback = re.findall(r'\b(?:in|to|at|of)\b\s+([A-Z][a-z]+(?: [A-Z][a-z]+)*)', command)
+        # Regex to match multi-word locations that are not prefixed by specific keywords
+        location_fallback = re.findall(r'\b(?:in|to|at|of|show\s+me|show\s+location\s+of|go\s+to)\b\s+([A-Za-z\s]+)', command)
         if location_fallback:
             location_name = ' '.join(location_fallback).strip()
+        else:
+            # Regex to capture multi-word locations directly mentioned
+            location_fallback = re.findall(r'\b([A-Za-z\s]+)\b', command)
+            if location_fallback:
+                location_name = ' '.join(location_fallback).strip()
 
-    # Check if location_name is not None
+    # Normalize the location name to lowercase
     if location_name:
+        location_name = location_name.lower()
+
+        # Check if location_name is in the database
         location_from_database = get_location_from_database(location_name)
         if location_from_database:
             return location_from_database
@@ -71,6 +80,7 @@ def extract_location(command):
 
     print("No location found")  # Debug statement
     return None
+
 
 def identify_command(command):
     # Convert command to lowercase for easier matching
@@ -91,7 +101,7 @@ def identify_command(command):
         r'bhuvan map|show bhuvan view|set view to bhuvan|delhi lulc map|land use map|land cover map|switch map to bhuvan view|switch to bhuvan map of delhi'
     ],
     'panToPlace': [
-        r'focus on|take me to|show me|pan to|navigate to|set view to|move to|go|display|center on|move map to|locate on|locate to'
+        r'focus on|take me to|show [a-zA-Z\s]+|pan |navigate to|set view to|move to|go|display|center on|move map to|locate on|locate to'
     ],
     'addMarkerToPlace': [
         r'add marker to|mark|place marker at|pin|drop pin at|set marker at|add pin|create marker|point'
@@ -100,7 +110,7 @@ def identify_command(command):
         r'show my location|where am i|show me where i am|current location|locate me|find my location|where is my position|my current location|find my current spot'
     ],
     'zoomIn': [
-        r'zoom in to [a-zA-Z\s]+|zoom in|increase zoom|zoom closer|magnify|enlarge|tighten view|focus closer|come closer|bring in closer|magnified|shrink|enhance|move closer|pull out|pull in'
+        r'zoom in [a-zA-Z\s]+|zoom in|increase zoom|zoom closer|magnify|enlarge|tighten view|focus closer|come closer|bring in closer|magnified|shrink|enhance|move closer|pull out|pull in'
     ],
     'zoomOut': [
         r'zoom out from [a-zA-Z\s]+|zoom out|decrease zoom|zoom farther|reduce zoom|widen view|pull back|zoom away|back off|wide view'
@@ -165,8 +175,15 @@ def identify_command(command):
 if __name__ == "__main__":
     test_commands = [
         "assam lulc",
-        "zoom in to himachal pradesh",
-        "zoom out gagal"
+        "show me himachal pradesh",
+        "zoom out gagal",
+        "zoom in to uttar pradesh",
+        "zoom in to madhya pradesh",
+        "zoom in to andhra pradesh",
+        "zoom in to arunachal pradesh",
+        "zoom in to tamil nadu",
+        "zoom in to jammu kashmir"
+
     ]
 
     for cmd in test_commands:
