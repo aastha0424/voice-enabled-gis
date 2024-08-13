@@ -34,11 +34,12 @@ document.addEventListener('DOMContentLoaded', function() {
         target: 'map',
         layers: [osm, osmHOT, satellite],
         view: new ol.View({
-            center: ol.proj.fromLonLat([77.095, 28.643]), // Centered on Delhi
+            projection: 'EPSG:4326',  // Ensure the projection matches your WMS layers
+            center: [77.095, 28.643], // Coordinates in EPSG:4326 (Longitude, Latitude)
             zoom: 10
         })
     });
-
+    
     addWMSLayers(map);
     addWMSBhuvanLayers(map);
     //addJsonLayers(map)
