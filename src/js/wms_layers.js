@@ -1,39 +1,145 @@
+// Define your projection here if needed
+const projection = ol.proj.get('EPSG:4326'); // Example projection, adjust as needed
+const tileSize = [256, 256];  // Example tile size, adjust as needed
+const resolutions = [];
+const maxResolution = ol.extent.getWidth(projection.getExtent()) / tileSize[0];
+for (let i = 0; i < 18; ++i) {
+    resolutions[i] = maxResolution / Math.pow(2, i);
+}
 
-// Database of WMS layers
-const wmsLayerDatabase = {
-    openTopoMap: {
-        url: 'http://a.tile.opentopomap.org/{z}/{x}/{y}.png',
-        tileSize: [256, 256],
-        attributions: 'Map data © OpenStreetMap contributors, Map style © OpenTopoMap',
-        title: 'OpenTopoMap',
-        type: 'base'
+const tileGrid = new ol.tilegrid.TileGrid({
+    origin: [-180, 90],  // Ensure this matches your WMS layer's origin
+    resolutions: resolutions,
+    tileSize: tileSize
+});
+
+const layersConfig = {
+    national_highway: {
+        Title: "National Highway",
+        id: "national_highway",
+        isShow: true,
+        type: "imageWMS",
+        layerFactoryParams: {
+            urlTemplate: "https://vedas.sac.gov.in/geoserver/vedas/wms",
+            layerParams: {
+                LAYERS: "vedas:INDIA_NHROADS",
+                VERSION: '1.1.1',
+                CRS: "EPSG:4326",
+            },
+            format: "image/png",
+        },
+        zIndex: 0,
+        baseIndex: 150,
     },
-    openRailwayMap: {
-        url: 'http://a.tiles.openrailwaymap.org/standard/{z}/{x}/{y}.png',
-        tileSize: [256, 256],
-        attributions: 'Map data © OpenStreetMap contributors',
-        title: 'OpenRailwayMap',
-        type: 'base'
+    railway_tracks: {
+        Title: "Railway Tracks",
+        id: "railway_tracks",
+        isShow: true,
+        type: "imageWMS",
+        layerFactoryParams: {
+            urlTemplate: "https://vedas.sac.gov.in/geoserver/vedas/wms",
+            layerParams: {
+                LAYERS: "vedas:INDIA_RLWY_TRACKS",
+                VERSION: '1.1.1',
+                CRS: "EPSG:4326",
+            },
+            format: "image/png",
+        },
+        zIndex: 0,
+        baseIndex: 150,
     },
-    // Add more layers here
+    railway_stations: {
+        Title: "Railway Stations",
+        id: "railway_stations",
+        isShow: true,
+        type: "imageWMS",
+        layerFactoryParams: {
+            urlTemplate: "https://vedas.sac.gov.in/geoserver/vedas/wms",
+            layerParams: {
+                LAYERS: "vedas:INDIA_RLWY_STATIONS",
+                VERSION: '1.1.1',
+                CRS: "EPSG:4326",
+            },
+            format: "image/png",
+        },
+        zIndex: 0,
+        baseIndex: 150,
+    },
+    airports: {
+        Title: "Airports",
+        id: "airports",
+        isShow: true,
+        type: "imageWMS",
+        layerFactoryParams: {
+            urlTemplate: "https://vedas.sac.gov.in/geoserver/vedas/wms",
+            layerParams: {
+                LAYERS: "vedas:INDIA_AIRPORTS",
+                VERSION: '1.1.1',
+                CRS: "EPSG:4326",
+            },
+            format: "image/png",
+        },
+        zIndex: 0,
+        baseIndex: 150,
+    },
+    awifs_fcc: {
+        Title: "AWiFS FCC",
+        id: "awifs_fcc",
+        isShow: true,
+        type: "imageWMS",
+        layerFactoryParams: {
+            urlTemplate: "https://vedas.sac.gov.in/ridam_server2/wms",
+            layerParams: {
+                LAYERS: "T0S0M1",
+                STYLES: "RIDAM_RGB",
+                VERSION: "1.3.0",
+                CRS: "EPSG:4326",
+                ARGS: "r_dataset_id:T0S1P1;g_dataset_id:T0S1P1;b_dataset_id:T0S1P1;r_from_time:20240421;r_to_time:20240430;g_from_time:20240421;g_to_time:20240430;b_from_time:20240421;b_to_time:20240430;r_index:3;g_index:2;b_index:1;r_max:0.3;g_max:0.3;b_max:0.3;r_min:0.001;g_min:0.001;b_min:0.001"
+            },
+            format: "image/png",
+        },
+        zIndex: 0,
+        baseIndex: 150,
+    },
 };
 
-//Function to add all WMS layers to the map
+
+// Function to add all WMS layers to the map
 export function addWMSLayers(map) {
-    Object.keys(wmsLayerDatabase).forEach(layerKey => {
-        const layerConfig = wmsLayerDatabase[layerKey];
-        const layer = new ol.layer.Tile({
-            source: new ol.source.XYZ({
-                url: layerConfig.url,
-                tileSize: layerConfig.tileSize,
-                attributions: layerConfig.attributions
-            }),
-            title: layerConfig.title,
-            type: layerConfig.type
+    Object.keys(layersConfig).forEach(layerKey => {
+        const layerConfig = layersConfig[layerKey];
+
+        // Ensure required parameters are available
+        if (!layerConfig.layerFactoryParams || !layerConfig.layerFactoryParams.layerParams.LAYERS) {
+            console.error(`Layer '${layerKey}' is missing required parameters.`);
+            return;
+        }
+
+        const source = new ol.source.TileWMS({
+            url: layerConfig.layerFactoryParams.urlTemplate,
+            params: {
+                'LAYERS': layerConfig.layerFactoryParams.layerParams.LAYERS,
+                'VERSION': layerConfig.layerFactoryParams.layerParams.VERSION || '1.1.1',
+                'CRS': layerConfig.layerFactoryParams.layerParams.CRS || 'EPSG:4326',
+                'FORMAT': layerConfig.layerFactoryParams.format || 'image/png',
+                // Include other params if needed
+                ...layerConfig.layerFactoryParams.layerParams
+            },
+            tileSize: [256, 256], // or layerConfig.tileSize
+            attributions: layerConfig.layerFactoryParams.attributions || ''
         });
+
+        const layer = new ol.layer.Tile({
+            source: source,
+            title: layerConfig.Title, // Use Title for display
+            visible: layerConfig.isShow || false,
+            zIndex: layerConfig.zIndex || 0
+        });
+
         map.addLayer(layer);
     });
 }
+
 //Function to add a WMS layer to the map
 export function addWMSLayer(map, wmsUrl, layerName, title) {
     const wmsLayer = new ol.layer.Tile({
