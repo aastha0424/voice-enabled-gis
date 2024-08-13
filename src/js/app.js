@@ -94,69 +94,72 @@ socket.onopen = () => {
 };
 
 socket.onmessage = (event) => {
-    const result = JSON.parse(event.data);
-    console.log('Received result from server:', result);
+    const results = JSON.parse(event.data);
+    console.log('Received result from server:', results);
 
-    const { action, place_name } = result;
+    results.forEach(result => {
+        const { action, place_name } = result;
 
-    if (action === 'StandardMap') {
-        showBaseLayer(osm);
-    } else if (action === 'ReliefMap') {
-        showBaseLayer(osmHOT);
-    } else if (action === 'SatelliteMap') {
-        showBaseLayer(satellite);
-    } else if (action === 'OpenTopoMap') {
-        showLayerByTitle('OpenTopoMap');
-    } else if (action === 'OpenRailwayMap') {
-        showLayerByTitle('OpenRailwayMap');
-    } else if (action === 'DelhiLULC') {
-        fetchPlaceInformation("delhi");
-        showLayerByTitle('Delhi LULC');
-    } else if (action === 'AssamLULC') {
-        fetchPlaceInformation("assam");
-        showLayerByTitle('Assam LULC');
-    } else if (action === 'HPGeomorphology') {
-        fetchPlaceInformation("himachal pradesh");
-        showLayerByTitle('HP Geomorphology');
-    } else if (action === 'UPLULC') {
-        fetchPlaceInformation("uttar pradesh");
-        showLayerByTitle('UP LULC');
-    }
-     else if (action === 'zoomIn') {
-        if (place_name === 'unknown') {
-            zoomIn(); // Zoom in from the current view
-        } else {
-             // Zoom in to a specific location
-             fetchPlaceInformation(place_name);
-             zoomIn();
+        if (action === 'StandardMap') {
+            showBaseLayer(osm);
+        } else if (action === 'ReliefMap') {
+            showBaseLayer(osmHOT);
+        } else if (action === 'SatelliteMap') {
+            showBaseLayer(satellite);
+        } else if (action === 'OpenTopoMap') {
+            showLayerByTitle('OpenTopoMap');
+        } else if (action === 'OpenRailwayMap') {
+            showLayerByTitle('OpenRailwayMap');
+        } else if (action === 'DelhiLULC') {
+            fetchPlaceInformation("delhi");
+            showLayerByTitle('Delhi LULC');
+        } else if (action === 'AssamLULC') {
+            fetchPlaceInformation("assam");
+            showLayerByTitle('Assam LULC');
+        } else if (action === 'HPGeomorphology') {
+            fetchPlaceInformation("himachal pradesh");
+            showLayerByTitle('HP Geomorphology');
+        } else if (action === 'UPLULC') {
+            fetchPlaceInformation("uttar pradesh");
+            showLayerByTitle('UP LULC');
         }
-    } else if (action === 'zoomOut') {
-        if (place_name === 'unknown') {
-            zoomOut(); // Zoom out from the current view
+        else if (action === 'zoomIn') {
+            if (place_name === 'unknown') {
+                zoomIn(); // Zoom in from the current view
+            } else {
+                // Zoom in to a specific location
+                fetchPlaceInformation(place_name);
+                zoomIn();
+            }
+        } else if (action === 'zoomOut') {
+            if (place_name === 'unknown') {
+                zoomOut(); // Zoom out from the current view
+            } else {
+                // Zoom out from a specific location
+                fetchPlaceInformation(place_name);
+                zoomOut();
+            }
+        } else if (action === 'panToPlace') {
+            if (place_name === 'unknown') {
+                alert('Action not location is unknown');
+            } else {
+                panToPlace(place_name);
+            }
+        } else if (action === 'addMarkerToPlace') {
+            if (place_name === 'unknown') {
+                alert('Action not location is unknown');
+            } else {
+                fetchPlaceInformation(place_name);
+                addMarkerToPlace(place_name);
+            }
+        } else if (action === 'showMyLocation') {
+            showCurrentLocation();
         } else {
-            // Zoom out from a specific location
-            fetchPlaceInformation(place_name);
-            zoomIn();
+            alert('Action not determined ');
         }
-    } else if (action === 'panToPlace') {
-        if (place_name === 'unknown') {
-            alert('Action not location is unknown');
-        } else {
-            panToPlace(place_name);
-        }
-    } else if (action === 'addMarkerToPlace') {
-        if (place_name === 'unknown') {
-            alert('Action not location is unknown');
-        } else {
-            fetchPlaceInformation(place_name);
-            addMarkerToPlace(place_name);
-        }
-    } else if (action === 'showMyLocation') {
-        showCurrentLocation();
-    } else {
-        alert('Action not determined ');
-    }
+    });
 };
+
 
 socket.onerror = (error) => {
     console.error('WebSocket error:', error);
