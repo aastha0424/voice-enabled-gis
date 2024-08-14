@@ -1,6 +1,6 @@
-import { addWMSBhuvanLayers } from './wms_layers.js';
+//import { addWMSBhuvanLayers } from './wms_layers.js';
 import { addWMSLayers } from './wms_layers.js';
-import { addWMSLayer } from './wms_layers.js';
+//import { addWMSLayer } from './wms_layers.js';
 //import { addJsonLayers } from './wms_layers.js';
 
 document.addEventListener('DOMContentLoaded', function() {
@@ -40,7 +40,7 @@ document.addEventListener('DOMContentLoaded', function() {
         })
     });
     addWMSLayers(map);
-    addWMSBhuvanLayers(map);
+    //addWMSBhuvanLayers(map);
     //addJsonLayers(map)
     // Adding a WMS layer with specific parameters
     //addWMSLayer(map, 'https://ch-osm-services.geodatasolutions.ch/geoserver/ows?service=wms&version=1.3.0&request=GetMap', 'magosm:highways_line', 'Highways Line');
@@ -108,30 +108,14 @@ socket.onmessage = (event) => {
             showBaseLayer(osmHOT);
         } else if (view === 'SatelliteMap') {
             showBaseLayer(satellite);
-        } else if (view === 'OpenTopoMap') {
-            showLayerByTitle('OpenTopoMap');
-        } else if (view === 'OpenRailwayMap') {
-            showLayerByTitle('OpenRailwayMap');
-        } else if (view === 'DelhiLULC') {
-            fetchPlaceInformation("delhi");
-            showLayerByTitle('Delhi LULC');
-        } else if (view === 'AssamLULC') {
-            fetchPlaceInformation("assam");
-            showLayerByTitle('Assam LULC');
-        } else if (view === 'HPGeomorphology') {
-            fetchPlaceInformation("himachal pradesh");
-            showLayerByTitle('HP Geomorphology');
-        } else if (view === 'UPLULC') {
-            fetchPlaceInformation("uttar pradesh");
-            showLayerByTitle('UP LULC');
         } else if (view === 'railway_track') {
-            showLayerByTitle('Railway Track');
+            showLayerByTitle('Railway Tracks');
         } else if (view === 'railway_station') {
             showLayerByTitle('Railway Station');
         } else if (view === 'national_highways') {
-            showLayerByTitle('National Highways');
+            showLayerByTitle('National Highway');
         } else if (view === 'airport') {
-            showLayerByTitle('Airport');
+            showLayerByTitle('Airports');
         } else {
             console.log('View not recognized or handled:', view);
         }
@@ -143,26 +127,14 @@ socket.onmessage = (event) => {
             hideBaseLayer(osmHOT);
         } else if (view === 'SatelliteMap') {
             hideBaseLayer(satellite);
-        } else if (view === 'OpenTopoMap') {
-            hideLayerByTitle('OpenTopoMap');
-        } else if (view === 'OpenRailwayMap') {
-            hideLayerByTitle('OpenRailwayMap');
-        } else if (view === 'DelhiLULC') {
-            hideLayerByTitle('Delhi LULC');
-        } else if (view === 'AssamLULC') {
-            hideLayerByTitle('Assam LULC');
-        } else if (view === 'HPGeomorphology') {
-            hideLayerByTitle('HP Geomorphology');
-        } else if (view === 'UPLULC') {
-            hideLayerByTitle('UP LULC');
         } else if (view === 'railway_track') {
-            hideLayerByTitle('Railway Track');
+            hideLayerByTitle('Railway Tracks');
         } else if (view === 'railway_station') {
             hideLayerByTitle('Railway Station');
         } else if (view === 'national_highways') {
-            hideLayerByTitle('National Highways');
+            hideLayerByTitle('National Highway');
         } else if (view === 'airport') {
-            hideLayerByTitle('Airport');
+            hideLayerByTitle('Airports');
         } else {
             console.log('View not recognized or handled:', view);
         }
