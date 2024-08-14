@@ -37,9 +37,8 @@ document.addEventListener('DOMContentLoaded', function() {
             projection: 'EPSG:4326',  // Ensure the projection matches your WMS layers
             center: [77.095, 28.643], // Coordinates in EPSG:4326 (Longitude, Latitude)
             zoom: 10
-        })
-    });
-    
+        })
+    });
     addWMSLayers(map);
     addWMSBhuvanLayers(map);
     //addJsonLayers(map)
@@ -98,38 +97,82 @@ socket.onmessage = (event) => {
     const result = JSON.parse(event.data);
     console.log('Received result from server:', result);
 
-    const { action, place_name } = result;
+    
+    const { action, place_name, view } = result;
 
-    if (action === 'StandardMap') {
-        showBaseLayer(osm);
-    } else if (action === 'ReliefMap') {
-        showBaseLayer(osmHOT);
-    } else if (action === 'SatelliteMap') {
-        showBaseLayer(satellite);
-    } else if (action === 'OpenTopoMap') {
-        showLayerByTitle('OpenTopoMap');
-    } else if (action === 'OpenRailwayMap') {
-        showLayerByTitle('OpenRailwayMap');
-    } else if (action === 'DelhiLULC') {
-        fetchPlaceInformation("delhi");
-        showLayerByTitle('Delhi LULC');
-    } else if (action === 'AssamLULC') {
-        fetchPlaceInformation("assam");
-        showLayerByTitle('Assam LULC');
-    } else if (action === 'HPGeomorphology') {
-        fetchPlaceInformation("himachal pradesh");
-        showLayerByTitle('HP Geomorphology');
-    } else if (action === 'UPLULC') {
-        fetchPlaceInformation("uttar pradesh");
-        showLayerByTitle('UP LULC');
-    }
-     else if (action === 'zoomIn') {
+    if (action === 'turn on') {
+        // Handle 'turn on' actions for different views
+        if (view === 'StandardMap') {
+            showBaseLayer(osm);
+        } else if (view === 'ReliefMap') {
+            showBaseLayer(osmHOT);
+        } else if (view === 'SatelliteMap') {
+            showBaseLayer(satellite);
+        } else if (view === 'OpenTopoMap') {
+            showLayerByTitle('OpenTopoMap');
+        } else if (view === 'OpenRailwayMap') {
+            showLayerByTitle('OpenRailwayMap');
+        } else if (view === 'DelhiLULC') {
+            fetchPlaceInformation("delhi");
+            showLayerByTitle('Delhi LULC');
+        } else if (view === 'AssamLULC') {
+            fetchPlaceInformation("assam");
+            showLayerByTitle('Assam LULC');
+        } else if (view === 'HPGeomorphology') {
+            fetchPlaceInformation("himachal pradesh");
+            showLayerByTitle('HP Geomorphology');
+        } else if (view === 'UPLULC') {
+            fetchPlaceInformation("uttar pradesh");
+            showLayerByTitle('UP LULC');
+        } else if (view === 'railway_track') {
+            showLayerByTitle('Railway Track');
+        } else if (view === 'railway_station') {
+            showLayerByTitle('Railway Station');
+        } else if (view === 'national_highways') {
+            showLayerByTitle('National Highways');
+        } else if (view === 'airport') {
+            showLayerByTitle('Airport');
+        } else {
+            console.log('View not recognized or handled:', view);
+        }
+    } else if (action === 'turn off') {
+        // Handle 'turn off' actions for different views
+        if (view === 'StandardMap') {
+            hideBaseLayer(osm);
+        } else if (view === 'ReliefMap') {
+            hideBaseLayer(osmHOT);
+        } else if (view === 'SatelliteMap') {
+            hideBaseLayer(satellite);
+        } else if (view === 'OpenTopoMap') {
+            hideLayerByTitle('OpenTopoMap');
+        } else if (view === 'OpenRailwayMap') {
+            hideLayerByTitle('OpenRailwayMap');
+        } else if (view === 'DelhiLULC') {
+            hideLayerByTitle('Delhi LULC');
+        } else if (view === 'AssamLULC') {
+            hideLayerByTitle('Assam LULC');
+        } else if (view === 'HPGeomorphology') {
+            hideLayerByTitle('HP Geomorphology');
+        } else if (view === 'UPLULC') {
+            hideLayerByTitle('UP LULC');
+        } else if (view === 'railway_track') {
+            hideLayerByTitle('Railway Track');
+        } else if (view === 'railway_station') {
+            hideLayerByTitle('Railway Station');
+        } else if (view === 'national_highways') {
+            hideLayerByTitle('National Highways');
+        } else if (view === 'airport') {
+            hideLayerByTitle('Airport');
+        } else {
+            console.log('View not recognized or handled:', view);
+        }
+    } else if (action === 'zoomIn') {
         if (place_name === 'unknown') {
             zoomIn(); // Zoom in from the current view
         } else {
-             // Zoom in to a specific location
-             fetchPlaceInformation(place_name);
-             zoomIn();
+            // Zoom in to a specific location
+            fetchPlaceInformation(place_name);
+            zoomIn();
         }
     } else if (action === 'zoomOut') {
         if (place_name === 'unknown') {
@@ -137,7 +180,7 @@ socket.onmessage = (event) => {
         } else {
             // Zoom out from a specific location
             fetchPlaceInformation(place_name);
-            zoomIn();
+            zoomOut();
         }
     } else if (action === 'panToPlace') {
         if (place_name === 'unknown') {
@@ -155,7 +198,7 @@ socket.onmessage = (event) => {
     } else if (action === 'showMyLocation') {
         showCurrentLocation();
     } else {
-        alert('Action not determined ');
+        alert('Action not determined');
     }
 };
 
@@ -239,7 +282,7 @@ socket.onclose = () => {
             item.onclick = () => {
                 const lon = parseFloat(suggestion.lon);
                 const lat = parseFloat(suggestion.lat);
-                const coords = ol.proj.fromLonLat([lon, lat]);
+                const coords = [lon, lat];
 
                 map.getView().animate({center: coords, zoom: 10});
                 clearSuggestions();
@@ -276,7 +319,7 @@ socket.onclose = () => {
 
     function fetchPlaceInformation(query) {
         const url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}`;
-        
+    
         fetch(url)
             .then(response => response.json())
             .then(data => {
@@ -284,9 +327,9 @@ socket.onclose = () => {
                     const place = data[0];
                     const lon = parseFloat(place.lon);
                     const lat = parseFloat(place.lat);
-                    const coords = ol.proj.fromLonLat([lon, lat]);
-
-                    map.getView().animate({center: coords, zoom: 10});
+    
+                    // Use EPSG:4326 coordinates directly if the map view is set to EPSG:4326
+                    map.getView().animate({ center: [lon, lat], zoom: 10 });
                 } else {
                     alert('No information found');
                 }
@@ -295,6 +338,7 @@ socket.onclose = () => {
                 console.error('Error fetching place information:', error);
             });
     }
+    
 
     function fetchPlaceInformationp(query) {
         const url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}`;
@@ -319,7 +363,7 @@ socket.onclose = () => {
             .then(place => {
                 const lon = parseFloat(place.lon);
                 const lat = parseFloat(place.lat);
-                const coords = ol.proj.fromLonLat([lon, lat]);
+                const coords = [lon, lat];
     
                 // Add the marker to the map
                 const markerFeature = new ol.Feature({
@@ -347,9 +391,16 @@ socket.onclose = () => {
         fetchPlaceSuggestions(placeName)
             .then(suggestions => {
                 if (suggestions.length > 0) {
-                    const { lon, lat } = suggestions[0]; // Use the first suggestion
-                    const coords = ol.proj.fromLonLat([parseFloat(lon), parseFloat(lat)]);
-                    map.getView().animate({ center: coords, zoom: 10 });
+                    // Use the first suggestion
+                    const suggestion = suggestions[0];
+                    const lon = parseFloat(suggestion.lon);
+                    const lat = parseFloat(suggestion.lat);
+    
+                    // Use EPSG:4326 coordinates directly if the map is in EPSG:4326
+                    map.getView().animate({
+                        center: [lon, lat],
+                        zoom: 10
+                    });
                     clearSuggestions(); // Clear any existing suggestions
                 } else {
                     console.log('No suggestions found for the place.');
@@ -359,12 +410,70 @@ socket.onclose = () => {
                 console.error('Error panning to place:', error);
             });
     }
+    
+    function hideBaseLayer(layer) {
+        const layers = map.getLayers().getArray();
+        const baseLayer = layers.find(l => l === layer);
+        if (baseLayer) {
+            baseLayer.setVisible(false);
+            console.log('Base layer hidden:', layer);
+        } else {
+            console.log('Base layer does not exist:', layer);
+        }
+    }
+    
+    function handleCommand(command) {
+        const action = command.action; // Extract the action from the command
+        const view = command.view; // Extract the view (layer name) from the command
+    
+        if (action === 'turn on') {
+            turnOnLayer(view); // Call the function to turn on the layer
+        } else if (action === 'turn off') {
+            turnOffLayer(view); // Call the function to turn off the layer
+        } else {
+            console.log('Unknown action:', action);
+            // Handle other actions...
+        }
+    }
+
+    // Function to turn on a layer
+function turnOnLayer(layerName) {
+    const layers = map.getLayers().getArray();
+    const layer = layers.find(layer => layer.get('name') === layerName);
+    if (layer) {
+        layer.setVisible(true);
+        console.log(`${layerName} layer turned on`);
+    } else {
+        console.log(`${layerName} layer does not exist`);
+    }
+}
+
+// Function to turn off a layer
+function turnOffLayer(layerName) {
+    const layers = map.getLayers().getArray();
+    const layer = layers.find(layer => layer.get('name') === layerName);
+    if (layer) {
+        layer.setVisible(false);
+        console.log(`${layerName} layer turned off`);
+    } else {
+        console.log(`${layerName} layer does not exist`);
+    }
+}
+  
+    
 
     function showCurrentLocation() {
         if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition(function(position) {
-                var coords = ol.proj.fromLonLat([position.coords.longitude, position.coords.latitude]);
-                map.getView().animate({ center: coords, zoom: 14 });
+                const lon = position.coords.longitude;
+                const lat = position.coords.latitude;
+                const coords = [lon, lat];
+            
+                // Directly use coordinates if the map view is in EPSG:4326
+                map.getView().animate({
+                    center: [lon, lat], // Coordinates in EPSG:4326
+                    zoom: 14
+                });
 
                 const locationMarker = new ol.Feature({
                     geometry: new ol.geom.Point(coords)
@@ -469,8 +578,7 @@ socket.onclose = () => {
     map.on('click', function(event) {
         if (markerMode) {
             const coords = map.getCoordinateFromPixel(event.pixel);
-            const lonLat = ol.proj.toLonLat(coords);
-
+            
             // Add marker at the clicked location
             const markerFeature = new ol.Feature({
                 geometry: new ol.geom.Point(coords)
