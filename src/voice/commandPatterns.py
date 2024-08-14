@@ -15,7 +15,7 @@ geolocator = Nominatim(user_agent="geoapiExercises")
 
 # Initialize the Groq client with your API key
 client = Client(
-    api_key="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"
+    api_key="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"
 )
 
 # Load the Indian cities dataset

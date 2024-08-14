@@ -112,10 +112,13 @@ socket.onmessage = (event) => {
             showLayerByTitle('Railway Tracks');
         } else if (view === 'railway_station') {
             showLayerByTitle('Railway Station');
+            showBaseLayer(osm);
         } else if (view === 'national_highways') {
             showLayerByTitle('National Highway');
+            showBaseLayer(osm);
         } else if (view === 'airport') {
             showLayerByTitle('Airports');
+            showBaseLayer(osm);
         } else {
             console.log('View not recognized or handled:', view);
         }
