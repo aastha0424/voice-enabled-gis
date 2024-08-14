@@ -81,26 +81,7 @@ const layersConfig = {
         },
         zIndex: 0,
         baseIndex: 150,
-    },
-    awifs_fcc: {
-        Title: "AWiFS FCC",
-        id: "awifs_fcc",
-        isShow: true,
-        type: "imageWMS",
-        layerFactoryParams: {
-            urlTemplate: "https://vedas.sac.gov.in/ridam_server2/wms",
-            layerParams: {
-                LAYERS: "T0S0M1",
-                STYLES: "RIDAM_RGB",
-                VERSION: "1.3.0",
-                CRS: "EPSG:4326",
-                ARGS: "r_dataset_id:T0S1P1;g_dataset_id:T0S1P1;b_dataset_id:T0S1P1;r_from_time:20240421;r_to_time:20240430;g_from_time:20240421;g_to_time:20240430;b_from_time:20240421;b_to_time:20240430;r_index:3;g_index:2;b_index:1;r_max:0.3;g_max:0.3;b_max:0.3;r_min:0.001;g_min:0.001;b_min:0.001"
-            },
-            format: "image/png",
-        },
-        zIndex: 0,
-        baseIndex: 150,
-    },
+    }
 };
 
 
