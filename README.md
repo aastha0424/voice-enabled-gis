@@ -1,5 +1,3 @@
-# voice-enabled-gis
-
 # Voice-enabled Geospatial Web Application
 
 This project is a voice-enabled geospatial web application that allows users to interact with a map using voice commands. The application leverages TensorFlow.js for GIS interaction and integrates with open-source GIS libraries like OpenLayers.
